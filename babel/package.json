@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "build": "babel origin -d src",
-    "help": "babel --help"
+    "help": "babel --help",
+    "rexForm": "babel origin/rexForm.js"
   },
   "dependencies": {
     "babel-core": "^6.26.0",

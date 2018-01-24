@@ -4,8 +4,34 @@
 	<meta charset="UTF-8">
 	<title>test babel</title>
 </head>
+<style type="text/css">
+	body input[type=text] {
+		display: block;
+		margin-top: 20px;
+	}
+</style>
 <body>
-	<button id="ttFunc">test function</button>
+	<input type="text" id="test1">
+	<input type="text" id="test2">
 </body>
-<script type="text/javascript" src="src/function.js"></script>
+<script type="text/javascript" src="src/rexForm.js"></script>
+<script type="text/javascript">
+	rexForm([
+	{
+		ele: 'test1',
+		tip: {
+			text: 'helloip',
+			style: 'ylone',
+		},
+		pat: 'IP',
+	},
+	{
+		ele: 'test2',
+		tip: {
+			text: 'helloport',
+			style: 'ylone',
+		},
+		pat: 'PORT',
+	}]);
+</script>
 </html>
