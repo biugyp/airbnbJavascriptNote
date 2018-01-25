@@ -9,29 +9,52 @@
 		display: block;
 		margin-top: 20px;
 	}
+
+	.console {
+		width: 500px;
+		height: 360px;
+		margin: 0 auto;
+		background-color: #000;
+		color: #fff;
+		font-size: 12px;
+		overflow-y: auto;
+		padding: 20px;
+	}
 </style>
 <body>
-	<input type="text" id="test1">
-	<input type="text" id="test2">
+	<input type="text" id="test1" placeholder="input some ip for test">
+	<input type="text" id="test2" placeholder='ipnut some port for test'>
+	<div class="console"></div>
 </body>
 <script type="text/javascript" src="src/rexForm.js"></script>
 <script type="text/javascript">
+	function testBack(rexOut) {
+		var con = document.getElementsByClassName('console').item(0);
+		var div = document.createElement('div');
+		var tip = String(rexOut.ele) + '：值 ' + String(rexOut.val) + ' 验证结果为：' + String(rexOut.out);
+		var text = document.createTextNode(tip);
+		div.appendChild(text);
+		con.appendChild(div);
+	};
+
 	rexForm([
 	{
 		ele: 'test1',
 		tip: {
-			text: 'helloip',
+			text: 'errorFor IP',
 			style: 'ylone',
 		},
 		pat: 'IP',
+		callback: testBack
 	},
 	{
 		ele: 'test2',
 		tip: {
-			text: 'helloport',
+			text: 'errorFor PORT',
 			style: 'ylone',
 		},
 		pat: 'PORT',
+		callback: testBack,
 	}]);
 </script>
 </html>

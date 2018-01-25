@@ -38,8 +38,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 ylone: {
                     color: '#fff',
                     background: '#000',
-                    width: '120px',
-                    height: '50px'
+                    height: '20px',
+                    padding: '0 10px',
+                    'font-size': '12px',
+                    'line-height': '20px',
+                    'border-radius': '20px 5px 5px 0'
                 }
             };
 
@@ -67,6 +70,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             this.pattern = pat;
             this.options = arr;
+            this.style = style;
             return this;
         }
 
@@ -76,14 +80,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 function init() {
                     var opt = this.options;
                     var patOBJ = this.pattern;
+                    var style = this.style;
                     var bindItem = function () {
                         function bindItem(item) {
                             if (item.ele && item.pat) {
                                 var ele = document.getElementById(item.ele);
-                                var pat = item.pat;
+                                var rect = ele.getBoundingClientRect();
+                                var offClientX = rect.right;
+                                var offClinetY = rect.top;
+                                var pattern = Object.hasOwnProperty.call(patOBJ, item.pat) ? patOBJ[item.pat] : item.pat;
+                                var styleItem = Object.hasOwnProperty.call(style, item.style) ? style[item.style] : item.style;
+                                var textItem = item.text;
+                                var callFun = item.callback;
                                 var testPat = function () {
                                     function testPat(val) {
-                                        var pattern = Object.hasOwnProperty.call(patOBJ, pat) ? patOBJ[pat] : pat;
                                         var reg = new RegExp(pattern);
                                         var out = reg.test(val);
                                         return out;
@@ -92,32 +102,39 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                                     return testPat;
                                 }();
 
-                                var isInPage = function () {
-                                    function isInPage(node) {
-                                        var out = node == document.body ? false : document.body.contains(node);
-                                        return out;
+                                var delTipEle = function () {
+                                    function delTipEle() {
+                                        var node = document.getElementById('tips');
+                                        var out = node === document.body || null ? false : document.body.contains(node);
+                                        if (out) {
+                                            document.body.removeChild(node);
+                                        }
                                     }
 
-                                    return isInPage;
+                                    return delTipEle;
                                 }();
 
                                 var creatDOM = function () {
-                                    function creatDOM() {
-                                        // var a = isInPage('tips');
-                                        var b = isInPage(document.getElementById('tips'));
-                                        console.log(b);
+                                    function creatDOM(val) {
                                         var div = document.createElement('div');
                                         var style = document.createAttribute('style');
                                         var id = document.createAttribute('id');
-                                        var text = document.createTextNode('hello');
                                         id.value = 'tips';
                                         div.setAttributeNode(id);
                                         div.setAttributeNode(style);
-                                        div.style.height = '30px';
-                                        div.style.width = '200px';
-                                        div.style.color = '#fff';
-                                        div.style.background = '#000';
-                                        div.appendChild(text);
+                                        div.style.position = 'absolute';
+                                        div.style.left = String(offClientX) + 'px';
+                                        div.style.top = String(offClinetY) + 'px';
+                                        for (var i in styleItem) {
+                                            div.style[i] = styleItem[i];
+                                        }
+                                        if (val) {
+                                            var text = document.createTextNode('✔');
+                                            div.appendChild(text);
+                                        } else {
+                                            var _text = document.createTextNode(textItem);
+                                            div.appendChild(_text);
+                                        }
                                         document.getElementsByTagName('body').item(0).appendChild(div);
                                     }
 
@@ -126,22 +143,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                                 var dealOut = function () {
                                     function dealOut(val) {
-                                        if (val) {
-                                            creatDOM();
-                                            alert('ok');
-                                        } else {
-                                            creatDOM();
-                                            alert('error');
-                                        }
+                                        delTipEle();
+                                        creatDOM(val);
                                     }
 
                                     return dealOut;
                                 }();
 
+                                // 给当前元素添加失去焦点事件
                                 ele.onblur = function () {
                                     var val = ele.value;
                                     var out = testPat(val);
                                     dealOut(out);
+                                    if (callFun) {
+                                        var rexOut = {
+                                            ele: ele,
+                                            val: val,
+                                            out: out
+                                        };
+                                        callFun(rexOut);
+                                    }
+                                };
+
+                                // 给当前元素添加获得焦点事件
+                                ele.onfocus = function () {
+                                    delTipEle();
                                 };
                             } else {
                                 var errorTip = 'ele or pat is null!';

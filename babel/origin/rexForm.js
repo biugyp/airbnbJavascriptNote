@@ -41,8 +41,11 @@
                 ylone: {
                     color: '#fff',
                     background: '#000',
-                    width: '120px',
-                    height: '50px',
+                    height: '20px',
+                    padding: '0 10px',
+                    'font-size': '12px',
+                    'line-height': '20px',
+                    'border-radius': '20px 5px 5px 0',
                 }
             };
 
@@ -70,58 +73,84 @@
 
             this.pattern = pat;
             this.options = arr;
+            this.style = style;
             return this;
         }
 
         init() {
             const opt = this.options;
             const patOBJ = this.pattern;
+            const style = this.style;
             const bindItem = (item) => {
                 if (item.ele && item.pat) {
                     const ele = document.getElementById(item.ele);
-                    const pat = item.pat;
+                    const rect = ele.getBoundingClientRect();
+                    const offClientX = rect.right;
+                    const offClinetY = rect.top;
+                    const pattern = Object.hasOwnProperty.call(patOBJ, item.pat) ? patOBJ[item.pat] : item.pat;
+                    const styleItem = Object.hasOwnProperty.call(style, item.style) ? style[item.style] : item.style;
+                    const textItem = item.text;
+                    const callFun = item.callback;
                     const testPat = (val) => {
-                        const pattern = Object.hasOwnProperty.call(patOBJ, pat) ? patOBJ[pat] : pat;
                         const reg = new RegExp(pattern);
                         const out = reg.test(val);
                         return out;
                     };
 
-                    const isInPage = (node) => {
-                        const out = (node == document.body) ? false : document.body.contains(node);
-                        return out;
+                    const delTipEle = () => {
+                        const node = document.getElementById('tips');
+                        const out = (node === document.body || null) ? false : document.body.contains(node);
+                        if (out) {
+                            document.body.removeChild(node);
+                        }
                     };
 
-                    const creatDOM = () => {
+                    const creatDOM = (val) => {
                         const div = document.createElement('div');
                         const style = document.createAttribute('style');
                         const id = document.createAttribute('id');
-                        const text = document.createTextNode('hello');
                         id.value = 'tips';
                         div.setAttributeNode(id);
                         div.setAttributeNode(style);
-                        div.style.height = '30px';
-                        div.style.width = '200px';
-                        div.style.color = '#fff';
-                        div.style.background = '#000';
-                        div.appendChild(text);
+                        div.style.position = 'absolute';
+                        div.style.left = `${offClientX}px`;
+                        div.style.top = `${offClinetY}px`;
+                        for (let i in styleItem) {
+                            div.style[i] = styleItem[i];
+                        }
+                        if (val) {
+                            const text = document.createTextNode('✔');
+                            div.appendChild(text);
+                        } else {
+                            const text = document.createTextNode(textItem);
+                            div.appendChild(text);
+                        }
                         document.getElementsByTagName('body').item(0).appendChild(div);
                     };
 
                     const dealOut = (val) => {
-                        if (val) {
-                            creatDOM();
-                            alert('ok');
-                        } else {
-                            creatDOM();
-                            alert('error');
-                        }
+                        delTipEle();
+                        creatDOM(val);
                     };
 
+                    // 给当前元素添加失去焦点事件
                     ele.onblur = function(){
                         const val = ele.value;
                         const out = testPat(val);
                         dealOut(out);
+                        if (callFun) {
+                            const rexOut = {
+                                ele: ele,
+                                val: val,
+                                out: out,
+                            };
+                            callFun(rexOut);
+                        }
+                    };
+
+                    // 给当前元素添加获得焦点事件
+                    ele.onfocus = function(){
+                        delTipEle();
                     };
 
                 } else {
