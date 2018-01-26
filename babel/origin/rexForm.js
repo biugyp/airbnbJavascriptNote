@@ -35,6 +35,7 @@
             const pat = {
                 IP: /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$/,
                 PORT: /^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$/,
+                EMAIL: /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/,
             };
 
             const style = {
@@ -46,6 +47,16 @@
                     'font-size': '12px',
                     'line-height': '20px',
                     'border-radius': '20px 5px 5px 0',
+                },
+                yeezy: {
+                    color: '#ef613e',
+                    background: 'rgb(147, 214, 195, 0.2)',
+                    height: '20px',
+                    padding: '0 10px',
+                    'border': '1px solid #93d6c3',
+                    'font-size': '12px',
+                    'line-height': '20px',
+                    'border-radius': '20px 5px 5px 0px',
                 }
             };
 
@@ -140,7 +151,7 @@
                         dealOut(out);
                         if (callFun) {
                             const rexOut = {
-                                ele: ele,
+                                pat: pattern,
                                 val: val,
                                 out: out,
                             };
